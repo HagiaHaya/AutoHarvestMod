@@ -2,38 +2,35 @@
   "schemaVersion": 1,
   "id": "autoharvest",
   "version": "${version}",
-  "name": "autoharvest",
+  "name": "Auto Harvest",
   "description": "Automatically harvest and re-plant crops",
   "authors": [
-    "flier268"
+    "HagiaHaya"
   ],
   "contact": {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/autoharvest",
-    "sources": "https://github.com/flier268/AutoHarvestMod",
-    "issues": "https://github.com/flier268/AutoHarvestMod/issues"
+    "sources": "https://github.com/HagiaHaya/AutoHarvestMod",
+    "issues": "https://github.com/HagiaHaya/AutoHarvestMod/issues"
   },
   "license": "GPL-3.0",
   "icon": "assets/autoharvest/icon.png",
   "environment": "client",
   "entrypoints": {
     "client": [
-      "com.flier268.autoharvest.AutoHarvest"
+      "com.hagiahaya.autoharvest.AutoHarvest"
     ],
     "modmenu": [
-      "com.flier268.autoharvest.Plugin.ModMenu"
+      "com.hagiahaya.autoharvest.Plugin.ModMenu"
     ]
   },
   "mixins": [
     "autoharvest.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.4.0",
+    "fabricloader": ">=0.14.14",
     "fabric": "*"
   },
   "suggests": {
     "another-mod": "*"
-  },
-  "custom": {
-    "modmenu:clientsideOnly": true
   }
 }

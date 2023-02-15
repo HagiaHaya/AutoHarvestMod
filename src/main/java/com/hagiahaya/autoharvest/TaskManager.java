@@ -1,29 +1,14 @@
-package com.flier268.autoharvest;
+package com.hagiahaya.autoharvest;
 
-
-import java.util.ArrayList;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.screen.slot.SlotActionType;
 
+import java.util.ArrayList;
+
 public class TaskManager {
     private final ArrayList<Line> taskList = new ArrayList<>();
-
-    enum Commands {
-        MOVEITEM,
-        SKIPTICK
-    }
-
-    static class Line {
-        public Line(Commands command, Object... args) {
-            Command = command;
-            Args = args;
-        }
-
-        Commands Command;
-        Object[] Args;
-    }
 
     public void Add_MoveItem(int slotNumber, int currentHotbarSlot) {
         taskList.add(new Line(Commands.MOVEITEM, slotNumber, currentHotbarSlot));
@@ -39,8 +24,7 @@ public class TaskManager {
     }
 
     public void RunATask() {
-        if (taskList.size() == 0)
-            return;
+        if (taskList.size() == 0) return;
         Line line = taskList.get(0);
         switch (line.Command) {
             case MOVEITEM:
@@ -58,5 +42,19 @@ public class TaskManager {
                 break;
         }
         taskList.remove(0);
+    }
+
+    enum Commands {
+        MOVEITEM, SKIPTICK
+    }
+
+    static class Line {
+        Commands Command;
+        Object[] Args;
+
+        public Line(Commands command, Object... args) {
+            Command = command;
+            Args = args;
+        }
     }
 }

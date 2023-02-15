@@ -1,4 +1,4 @@
-package com.flier268.autoharvest;
+package com.hagiahaya.autoharvest;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.BiMap;
@@ -72,29 +72,29 @@ public class CropManager {
         }
     };
 
-    public static final BiMap<Block, Item> SEED_MAP = HashBiMap.create(
-            new HashMap<>() {
-                {
-                    put(Blocks.SWEET_BERRY_BUSH, Items.SWEET_BERRIES);
-                    put(Blocks.WHEAT, Items.WHEAT_SEEDS);
-                    put(Blocks.POTATOES, Items.POTATO);
-                    put(Blocks.CARROTS, Items.CARROT);
-                    put(Blocks.BEETROOTS, Items.BEETROOT_SEEDS);
-                    put(Blocks.NETHER_WART, Items.NETHER_WART);
-                    put(Blocks.MELON_STEM, Items.MELON_SEEDS);
-                    put(Blocks.PUMPKIN_STEM, Items.PUMPKIN_SEEDS);
-                    put(Blocks.SUGAR_CANE, Items.SUGAR_CANE);
-                    put(Blocks.GRASS, Items.GRASS);
-                    put(Blocks.BAMBOO, Items.BAMBOO);
-                    // 1.16
-                    put(Blocks.CRIMSON_FUNGUS, Items.CRIMSON_FUNGUS);
-                    put(Blocks.WARPED_FUNGUS, Items.WARPED_FUNGUS);
-                    put(Blocks.KELP, Items.KELP);
-                }
-            });
+    public static final BiMap<Block, Item> SEED_MAP = HashBiMap.create(new HashMap<>() {
+        {
+            put(Blocks.SWEET_BERRY_BUSH, Items.SWEET_BERRIES);
+            put(Blocks.WHEAT, Items.WHEAT_SEEDS);
+            put(Blocks.POTATOES, Items.POTATO);
+            put(Blocks.CARROTS, Items.CARROT);
+            put(Blocks.BEETROOTS, Items.BEETROOT_SEEDS);
+            put(Blocks.NETHER_WART, Items.NETHER_WART);
+            put(Blocks.MELON_STEM, Items.MELON_SEEDS);
+            put(Blocks.PUMPKIN_STEM, Items.PUMPKIN_SEEDS);
+            put(Blocks.SUGAR_CANE, Items.SUGAR_CANE);
+            put(Blocks.GRASS, Items.GRASS);
+            put(Blocks.BAMBOO, Items.BAMBOO);
+            // 1.16
+            put(Blocks.CRIMSON_FUNGUS, Items.CRIMSON_FUNGUS);
+            put(Blocks.WARPED_FUNGUS, Items.WARPED_FUNGUS);
+            put(Blocks.KELP, Items.KELP);
+        }
+    });
 
     public static final Multimap<Item, Class<? extends AnimalEntity>> FEED_MAP;
     public static final Multimap<Item, Class<? extends AnimalEntity>> SHEAR_MAP;
+
     static {
         FEED_MAP = ArrayListMultimap.create();
         FEED_MAP.put(Items.GOLDEN_CARROT, HorseEntity.class);
@@ -175,32 +175,26 @@ public class CropManager {
         } else if (b == BERRY) {
             return stat.get(SweetBerryBushBlock.AGE) == 3;
         } else if (b == NETHER_WART) {
-            if (b instanceof NetherWartBlock)
-                return stat.get(NetherWartBlock.AGE) >= 3;
+            if (b instanceof NetherWartBlock) return stat.get(NetherWartBlock.AGE) >= 3;
             return false;
         } else if (b == REED_BLOCK || b == BAMBOO || (b == KELP || b == KELP_PLANT)) {
             Block blockDown = w.getBlockState(pos.down()).getBlock();
             Block blockDown2 = w.getBlockState(pos.down(2)).getBlock();
-            return (blockDown == REED_BLOCK && blockDown2 != REED_BLOCK) ||
-                    (blockDown == BAMBOO && blockDown2 != BAMBOO) ||
-                    (blockDown == KELP_PLANT && blockDown2 != KELP_PLANT);
+            return (blockDown == REED_BLOCK && blockDown2 != REED_BLOCK) || (blockDown == BAMBOO && blockDown2 != BAMBOO) || (blockDown == KELP_PLANT && blockDown2 != KELP_PLANT);
         }
         return false;
     }
 
     public static boolean isBoneMeal(ItemStack stack) {
-        return (!stack.isEmpty()
-                && stack.getItem() == Items.BONE_MEAL);
+        return (!stack.isEmpty() && stack.getItem() == Items.BONE_MEAL);
     }
 
     public static boolean isSeed(ItemStack stack) {
-        return (!stack.isEmpty()
-                && SEED_MAP.containsValue(stack.getItem()));
+        return (!stack.isEmpty() && SEED_MAP.containsValue(stack.getItem()));
     }
 
     public static boolean isCocoa(ItemStack stack) {
-        return (!stack.isEmpty()
-                && stack.getItem() == Items.COCOA_BEANS);
+        return (!stack.isEmpty() && stack.getItem() == Items.COCOA_BEANS);
     }
 
     public static boolean canPaint(BlockState s, ItemStack stack) {
@@ -216,13 +210,11 @@ public class CropManager {
     }
 
     public static boolean isRod(ItemStack stack) {
-        return (!stack.isEmpty()
-                && stack.getItem() == Items.FISHING_ROD);
+        return (!stack.isEmpty() && stack.getItem() == Items.FISHING_ROD);
     }
 
     public static boolean canPlantOn(Item m, World w, BlockPos p) {
-        if (!SEED_MAP.containsValue(m))
-            return false;
+        if (!SEED_MAP.containsValue(m)) return false;
         return SEED_MAP.inverse().get(m).getDefaultState().canPlaceAt(w, p);
     }
 }

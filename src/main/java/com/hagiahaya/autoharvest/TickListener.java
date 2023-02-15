@@ -1,6 +1,4 @@
-package com.flier268.autoharvest;
-
-import java.util.Collection;
+package com.hagiahaya.autoharvest;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.block.Block;
@@ -22,6 +20,8 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import java.util.Collection;
+
 public class TickListener {
     private final Configure configure;
     private ClientPlayerEntity p;
@@ -36,8 +36,7 @@ public class TickListener {
             if (AutoHarvest.instance.overlayRemainingTick > 0) {
                 AutoHarvest.instance.overlayRemainingTick--;
             }
-            if (AutoHarvest.instance.Switch)
-                onTick(e.player);
+            if (AutoHarvest.instance.Switch) onTick(e.player);
         });
     }
 
@@ -90,8 +89,7 @@ public class TickListener {
             for (int deltaX = -configure.effect_radius.value; deltaX <= configure.effect_radius.value; ++deltaX)
                 for (int deltaZ = -configure.effect_radius.value; deltaZ <= configure.effect_radius.value; ++deltaZ) {
                     BlockPos pos = new BlockPos(X + deltaX, Y + deltaY, Z + deltaZ);
-                    if (CropManager.isWeedBlock(w, pos) || (AutoHarvest.instance.configure.flowerISseed.value
-                            && CropManager.isFlowerBlock(w, pos))) {
+                    if (CropManager.isWeedBlock(w, pos) || (AutoHarvest.instance.configure.flowerISseed.value && CropManager.isFlowerBlock(w, pos))) {
                         assert MinecraftClient.getInstance().interactionManager != null;
                         MinecraftClient.getInstance().interactionManager.attackBlock(pos, Direction.UP);
                         return;
@@ -113,13 +111,9 @@ public class TickListener {
                     Block block = state.getBlock();
                     if (CropManager.isCropMature(w, pos, state, block)) {
                         if (block == Blocks.SWEET_BERRY_BUSH) {
-                            BlockHitResult blockHitResult = new BlockHitResult(
-                                    new Vec3d(X + deltaX + 0.5, Y + deltaY - 0.5, Z + deltaZ + 0.5), Direction.UP,
-                                    pos,
-                                    false);
+                            BlockHitResult blockHitResult = new BlockHitResult(new Vec3d(X + deltaX + 0.5, Y + deltaY - 0.5, Z + deltaZ + 0.5), Direction.UP, pos, false);
                             assert MinecraftClient.getInstance().interactionManager != null;
-                            MinecraftClient.getInstance().interactionManager.interactBlock(p,
-                                    MinecraftClient.getInstance().world, Hand.MAIN_HAND, blockHitResult);
+                            MinecraftClient.getInstance().interactionManager.interactBlock(p, Hand.MAIN_HAND, blockHitResult);
 
                         } else {
                             assert MinecraftClient.getInstance().interactionManager != null;
@@ -149,9 +143,7 @@ public class TickListener {
                 DefaultedList<ItemStack> inv = p.getInventory().main;
                 for (int idx = 0; idx < 36; ++idx) {
                     ItemStack s = inv.get(idx);
-                    if (s.getItem() == lastUsedItem.getItem() &&
-                            s.getDamage() == lastUsedItem.getDamage() &&
-                            !s.hasNbt()) {
+                    if (s.getItem() == lastUsedItem.getItem() && s.getDamage() == lastUsedItem.getDamage() && !s.hasNbt()) {
                         AutoHarvest.instance.taskManager.Add_MoveItem(idx, p.getInventory().selectedSlot);
                         return s;
                     }
@@ -168,15 +160,13 @@ public class TickListener {
      **/
     private int tryReplacingFishingRod() {
         ItemStack itemStack = p.getMainHandStack();
-        if (CropManager.isRod(itemStack)
-                && (!configure.keepFishingRodAlive.value || itemStack.getMaxDamage() - itemStack.getDamage() > 1)) {
+        if (CropManager.isRod(itemStack) && (!configure.keepFishingRodAlive.value || itemStack.getMaxDamage() - itemStack.getDamage() > 1)) {
             return 0;
         } else {
             DefaultedList<ItemStack> inv = p.getInventory().main;
             for (int idx = 0; idx < 36; ++idx) {
                 ItemStack s = inv.get(idx);
-                if (CropManager.isRod(s)
-                        && (!configure.keepFishingRodAlive.value || s.getMaxDamage() - s.getDamage() > 1)) {
+                if (CropManager.isRod(s) && (!configure.keepFishingRodAlive.value || s.getMaxDamage() - s.getDamage() > 1)) {
                     AutoHarvest.instance.taskManager.Add_MoveItem(idx, p.getInventory().selectedSlot);
                     return 1;
                 }
@@ -188,8 +178,7 @@ public class TickListener {
     private void plantTick() {
         ItemStack handItem = tryFillItemInHand();
         // Toto: 透過PlantBlock檢查
-        if (handItem == null)
-            return;
+        if (handItem == null) return;
         if (!CropManager.isSeed(handItem)) {
             if (CropManager.isCocoa(handItem)) {
                 plantCocoaTick(handItem);
@@ -205,18 +194,14 @@ public class TickListener {
         for (int deltaX = -configure.effect_radius.value; deltaX <= configure.effect_radius.value; ++deltaX)
             for (int deltaZ = -configure.effect_radius.value; deltaZ <= configure.effect_radius.value; ++deltaZ) {
                 BlockPos pos = new BlockPos(X + deltaX, Y, Z + deltaZ);
-                if (CropManager.canPaint(w.getBlockState(pos), handItem) == false)
-                continue;
+                if (!CropManager.canPaint(w.getBlockState(pos), handItem)) continue;
                 if (CropManager.canPlantOn(handItem.getItem(), w, pos)) {
-                    if (w.getBlockState(pos.down()).getBlock() == Blocks.KELP)
-                        continue;
+                    if (w.getBlockState(pos.down()).getBlock() == Blocks.KELP) continue;
                     lastUsedItem = handItem.copy();
                     assert MinecraftClient.getInstance().interactionManager != null;
                     BlockPos downPos = pos.down();
-                    BlockHitResult blockHitResult = new BlockHitResult(new Vec3d(X + deltaX + 0.5, Y, Z + deltaZ + 0.5),
-                            Direction.UP, downPos, false);
-                    MinecraftClient.getInstance().interactionManager.interactBlock(MinecraftClient.getInstance().player,
-                            MinecraftClient.getInstance().world, Hand.MAIN_HAND, blockHitResult);
+                    BlockHitResult blockHitResult = new BlockHitResult(new Vec3d(X + deltaX + 0.5, Y, Z + deltaZ + 0.5), Direction.UP, downPos, false);
+                    MinecraftClient.getInstance().interactionManager.interactBlock(MinecraftClient.getInstance().player, Hand.MAIN_HAND, blockHitResult);
                     minusOneInHand();
                     return;
                 }
@@ -233,8 +218,7 @@ public class TickListener {
             for (int deltaZ = -configure.effect_radius.value; deltaZ <= configure.effect_radius.value; ++deltaZ) {
                 for (int deltaY = 0; deltaY <= 7; ++deltaY) {
                     BlockPos pos = new BlockPos(X + deltaX, Y + deltaY, Z + deltaZ);
-                    if (!canReachBlock(p, pos))
-                        continue;
+                    if (!canReachBlock(p, pos)) continue;
                     BlockState jungleBlock = w.getBlockState(pos);
                     if (CropManager.isJungleLog(jungleBlock)) {
                         BlockPos tmpPos;
@@ -243,12 +227,9 @@ public class TickListener {
                         tmpPos = pos.add(tmpFace.getVector());
                         if (w.getBlockState(tmpPos).getBlock() == Blocks.AIR) {
                             lastUsedItem = handItem.copy();
-                            BlockHitResult blockHitResult = new BlockHitResult(
-                                    new Vec3d(X + deltaX + 1, Y + deltaY + 0.5, Z + deltaZ + 0.5), tmpFace, pos, false);
+                            BlockHitResult blockHitResult = new BlockHitResult(new Vec3d(X + deltaX + 1, Y + deltaY + 0.5, Z + deltaZ + 0.5), tmpFace, pos, false);
                             assert MinecraftClient.getInstance().interactionManager != null;
-                            MinecraftClient.getInstance().interactionManager.interactBlock(
-                                    MinecraftClient.getInstance().player, MinecraftClient.getInstance().world,
-                                    Hand.MAIN_HAND, blockHitResult);
+                            MinecraftClient.getInstance().interactionManager.interactBlock(MinecraftClient.getInstance().player, Hand.MAIN_HAND, blockHitResult);
                             minusOneInHand();
                             return;
                         }
@@ -257,12 +238,9 @@ public class TickListener {
                         tmpPos = pos.add(tmpFace.getVector());
                         if (w.getBlockState(tmpPos).getBlock() == Blocks.AIR) {
                             lastUsedItem = handItem.copy();
-                            BlockHitResult blockHitResult = new BlockHitResult(
-                                    new Vec3d(X + deltaX, Y + deltaY + 0.5, Z + deltaZ + 0.5), tmpFace, pos, false);
+                            BlockHitResult blockHitResult = new BlockHitResult(new Vec3d(X + deltaX, Y + deltaY + 0.5, Z + deltaZ + 0.5), tmpFace, pos, false);
                             assert MinecraftClient.getInstance().interactionManager != null;
-                            MinecraftClient.getInstance().interactionManager.interactBlock(
-                                    MinecraftClient.getInstance().player, MinecraftClient.getInstance().world,
-                                    Hand.MAIN_HAND, blockHitResult);
+                            MinecraftClient.getInstance().interactionManager.interactBlock(MinecraftClient.getInstance().player, Hand.MAIN_HAND, blockHitResult);
                             minusOneInHand();
                             return;
                         }
@@ -271,12 +249,9 @@ public class TickListener {
                         tmpPos = pos.add(tmpFace.getVector());
                         if (w.getBlockState(tmpPos).getBlock() == Blocks.AIR) {
                             lastUsedItem = handItem.copy();
-                            BlockHitResult blockHitResult = new BlockHitResult(
-                                    new Vec3d(X + deltaX + 0.5, Y + deltaY + 0.5, Z + deltaZ + 1), tmpFace, pos, false);
+                            BlockHitResult blockHitResult = new BlockHitResult(new Vec3d(X + deltaX + 0.5, Y + deltaY + 0.5, Z + deltaZ + 1), tmpFace, pos, false);
                             assert MinecraftClient.getInstance().interactionManager != null;
-                            MinecraftClient.getInstance().interactionManager.interactBlock(
-                                    MinecraftClient.getInstance().player, MinecraftClient.getInstance().world,
-                                    Hand.MAIN_HAND, blockHitResult);
+                            MinecraftClient.getInstance().interactionManager.interactBlock(MinecraftClient.getInstance().player, Hand.MAIN_HAND, blockHitResult);
                             minusOneInHand();
                             return;
                         }
@@ -285,12 +260,9 @@ public class TickListener {
                         tmpPos = pos.add(tmpFace.getVector());
                         if (w.getBlockState(tmpPos).getBlock() == Blocks.AIR) {
                             lastUsedItem = handItem.copy();
-                            BlockHitResult blockHitResult = new BlockHitResult(
-                                    new Vec3d(X + deltaX + 0.5, Y + deltaY + 0.5, Z + deltaZ), tmpFace, pos, false);
+                            BlockHitResult blockHitResult = new BlockHitResult(new Vec3d(X + deltaX + 0.5, Y + deltaY + 0.5, Z + deltaZ), tmpFace, pos, false);
                             assert MinecraftClient.getInstance().interactionManager != null;
-                            MinecraftClient.getInstance().interactionManager.interactBlock(
-                                    MinecraftClient.getInstance().player, MinecraftClient.getInstance().world,
-                                    Hand.MAIN_HAND, blockHitResult);
+                            MinecraftClient.getInstance().interactionManager.interactBlock(MinecraftClient.getInstance().player, Hand.MAIN_HAND, blockHitResult);
                             minusOneInHand();
                             return;
                         }
@@ -310,25 +282,18 @@ public class TickListener {
 
     private void feedTick() {
         ItemStack handItem = tryFillItemInHand();
-        if (handItem == null)
-            return;
+        if (handItem == null) return;
 
         // if (animalList.isEmpty()) return;
-        Box box = new Box(p.getX() - configure.effect_radius.value, p.getY() - configure.effect_radius.value,
-                p.getZ() - configure.effect_radius.value,
-                p.getX() + configure.effect_radius.value, p.getY() + configure.effect_radius.value,
-                p.getZ() + configure.effect_radius.value);
+        Box box = new Box(p.getX() - configure.effect_radius.value, p.getY() - configure.effect_radius.value, p.getZ() - configure.effect_radius.value, p.getX() + configure.effect_radius.value, p.getY() + configure.effect_radius.value, p.getZ() + configure.effect_radius.value);
         Collection<Class<? extends AnimalEntity>> needShearAnimalList = CropManager.SHEAR_MAP.get(handItem.getItem());
         for (Class<? extends AnimalEntity> type : needShearAnimalList) {
-            for (AnimalEntity e : p.getEntityWorld().getEntitiesByClass(
-                    type,
-                    box,
-                    animalEntity -> {
-                        if (animalEntity instanceof SheepEntity) {
-                            return !animalEntity.isBaby() && !((SheepEntity) animalEntity).isSheared();
-                        }
-                        return false;
-                    })) {
+            for (AnimalEntity e : p.getEntityWorld().getEntitiesByClass(type, box, animalEntity -> {
+                if (animalEntity instanceof SheepEntity) {
+                    return !animalEntity.isBaby() && !((SheepEntity) animalEntity).isSheared();
+                }
+                return false;
+            })) {
                 lastUsedItem = handItem.copy();
                 assert MinecraftClient.getInstance().interactionManager != null;
                 MinecraftClient.getInstance().interactionManager.interactEntity(p, e, Hand.MAIN_HAND);
@@ -344,15 +309,11 @@ public class TickListener {
          */
         Collection<Class<? extends AnimalEntity>> needFeedAnimalList = CropManager.FEED_MAP.get(handItem.getItem());
         for (Class<? extends AnimalEntity> type : needFeedAnimalList) {
-            for (AnimalEntity e : p.getEntityWorld().getEntitiesByClass(
-                    type,
-                    box,
-                    animalEntity -> animalEntity.getBreedingAge() >= 0 && !animalEntity.isInLove())) {
+            for (AnimalEntity e : p.getEntityWorld().getEntitiesByClass(type, box, animalEntity -> animalEntity.getBreedingAge() >= 0 && !animalEntity.isInLove())) {
                 lastUsedItem = handItem.copy();
 
                 assert MinecraftClient.getInstance().interactionManager != null;
-                MinecraftClient.getInstance().interactionManager
-                        .interactEntity(p, e, Hand.MAIN_HAND);
+                MinecraftClient.getInstance().interactionManager.interactEntity(p, e, Hand.MAIN_HAND);
             }
         }
 
@@ -365,8 +326,7 @@ public class TickListener {
 
     private boolean isFishBites(ClientPlayerEntity player) {
         FishingBobberEntity fishEntity = player.fishHook;
-        return fishEntity != null && (fishEntity.prevX - fishEntity.getX()) == 0
-                && (fishEntity.prevZ - fishEntity.getZ()) == 0 && (fishEntity.prevY - fishEntity.getY()) < -0.05d;
+        return fishEntity != null && (fishEntity.prevX - fishEntity.getX()) == 0 && (fishEntity.prevZ - fishEntity.getZ()) == 0 && (fishEntity.prevY - fishEntity.getY()) < -0.05d;
     }
 
     private void fishingTick() {
@@ -380,19 +340,13 @@ public class TickListener {
                 if (fishBitesAt == 0 && isFishBites(p)) {
                     fishBitesAt = getWorldTime();
                     assert MinecraftClient.getInstance().interactionManager != null;
-                    MinecraftClient.getInstance().interactionManager.interactItem(
-                            p,
-                            MinecraftClient.getInstance().world,
-                            Hand.MAIN_HAND);
+                    MinecraftClient.getInstance().interactionManager.interactItem(p, Hand.MAIN_HAND);
                 }
 
                 /* Cast */
                 if (fishBitesAt != 0 && fishBitesAt + 20 <= getWorldTime()) {
                     assert MinecraftClient.getInstance().interactionManager != null;
-                    MinecraftClient.getInstance().interactionManager.interactItem(
-                            p,
-                            MinecraftClient.getInstance().world,
-                            Hand.MAIN_HAND);
+                    MinecraftClient.getInstance().interactionManager.interactItem(p, Hand.MAIN_HAND);
                     fishBitesAt = 0;
                 }
                 break;
@@ -421,14 +375,11 @@ public class TickListener {
                     Block block = blockState.getBlock();
                     if (block instanceof Fertilizable) {
                         if (((Fertilizable) block).isFertilizable(w, pos, blockState, w.isClient)) {
-                            BlockHitResult blockHitResult = new BlockHitResult(
-                                    new Vec3d(X + deltaX + 0.5, Y, Z + deltaZ + 0.5), Direction.UP, pos, false);
+                            BlockHitResult blockHitResult = new BlockHitResult(new Vec3d(X + deltaX + 0.5, Y, Z + deltaZ + 0.5), Direction.UP, pos, false);
                             assert handItem != null;
                             lastUsedItem = handItem.copy();
                             assert MinecraftClient.getInstance().interactionManager != null;
-                            MinecraftClient.getInstance().interactionManager.interactBlock(
-                                    MinecraftClient.getInstance().player, MinecraftClient.getInstance().world,
-                                    Hand.MAIN_HAND, blockHitResult);
+                            MinecraftClient.getInstance().interactionManager.interactBlock(MinecraftClient.getInstance().player, Hand.MAIN_HAND, blockHitResult);
                             minusOneInHand();
                             return;
                         }

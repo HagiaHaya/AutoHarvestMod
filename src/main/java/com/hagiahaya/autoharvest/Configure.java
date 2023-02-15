@@ -1,4 +1,4 @@
-package com.flier268.autoharvest;
+package com.hagiahaya.autoharvest;
 
 import com.google.gson.*;
 import net.fabricmc.loader.api.FabricLoader;
@@ -9,54 +9,20 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 
 public class Configure {
-    private File configFile;
-
+    private final File configFile;
     public FlowerISseed flowerISseed = new FlowerISseed();
-
-    public static class FlowerISseed {
-        public boolean value = false;
-        private String name = "flowerISseed";
-    }
-
     public Effect_radius effect_radius = new Effect_radius();
-
-    public static class Effect_radius {
-        public int value = 3;
-        private String name = "effect_radius";
-        public static final int Max = 3;
-        public static final int Min = 0;
-    }
-
     public TickSkip tickSkip = new TickSkip();
-
-    public static class TickSkip {
-        public int value = 0;
-        private String name = "tick_skip";
-        public static final int Max = 100;
-        public static final int Min = 0;
-    }
-
     public KeepFishingRodAlive keepFishingRodAlive = new KeepFishingRodAlive();
 
-    public static class KeepFishingRodAlive {
-        public boolean value = true;
-        String name = "keepFishingRodAlive";
-    }
-
-
     public Configure() {
-        this.configFile = FabricLoader
-                .getInstance()
-                .getConfigDir()
-                .resolve("AutoHarvest.json")
-                .toFile();
+        this.configFile = FabricLoader.getInstance().getConfigDir().resolve("AutoHarvest.json").toFile();
         flowerISseed.value = false;
     }
 
     public Configure load() {
         try {
-            if (!Files.exists(this.configFile.toPath()))
-                return this;
+            if (!Files.exists(this.configFile.toPath())) return this;
             String jsonStr = new String(Files.readAllBytes(this.configFile.toPath()));
             if (!jsonStr.equals("")) {
                 JsonObject jsonObject = JsonParser.parseString(jsonStr).getAsJsonObject();
@@ -64,7 +30,7 @@ public class Configure {
                 if (jsonObject.has(flowerISseed.name)) {
                     try {
                         this.flowerISseed.value = jsonObject.getAsJsonPrimitive(flowerISseed.name).getAsBoolean();
-                    } catch (Exception e) {
+                    } catch (Exception ignored) {
                     }
                 }
                 if (jsonObject.has(effect_radius.name)) {
@@ -72,7 +38,7 @@ public class Configure {
                         this.effect_radius.value = jsonObject.getAsJsonPrimitive(effect_radius.name).getAsInt();
                         if (effect_radius.value < Effect_radius.Min || effect_radius.value > Effect_radius.Max)
                             effect_radius.value = Effect_radius.Max;
-                    } catch (Exception e) {
+                    } catch (Exception ignored) {
                     }
                 }
                 if (jsonObject.has(tickSkip.name)) {
@@ -80,13 +46,13 @@ public class Configure {
                         this.tickSkip.value = jsonObject.getAsJsonPrimitive(tickSkip.name).getAsInt();
                         if (tickSkip.value < TickSkip.Min || tickSkip.value > TickSkip.Max)
                             tickSkip.value = TickSkip.Min;
-                    } catch (Exception e) {
+                    } catch (Exception ignored) {
                     }
                 }
                 if (jsonObject.has(keepFishingRodAlive.name)) {
                     try {
                         this.keepFishingRodAlive.value = jsonObject.getAsJsonPrimitive(keepFishingRodAlive.name).getAsBoolean();
-                    } catch (Exception e) {
+                    } catch (Exception ignored) {
                     }
                 }
                 return this;
@@ -111,5 +77,29 @@ public class Configure {
             e.printStackTrace();
         }
         return this;
+    }
+
+    public static class FlowerISseed {
+        private final String name = "flowerISseed";
+        public boolean value = false;
+    }
+
+    public static class Effect_radius {
+        public static final int Max = 3;
+        public static final int Min = 0;
+        private final String name = "effect_radius";
+        public int value = 3;
+    }
+
+    public static class TickSkip {
+        public static final int Max = 100;
+        public static final int Min = 0;
+        private final String name = "tick_skip";
+        public int value = 0;
+    }
+
+    public static class KeepFishingRodAlive {
+        public boolean value = true;
+        String name = "keepFishingRodAlive";
     }
 }

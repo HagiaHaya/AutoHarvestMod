@@ -1,5 +1,4 @@
-package com.flier268.autoharvest.Plugin;
-
+package com.hagiahaya.autoharvest.Plugin;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
